@@ -3,9 +3,9 @@ name: DevSecOps - Snyk SCA
 
 on:
   push:
-    branches: [main, develop]
+    branches: [master]
   pull_request:
-    branches: [main]
+    branches: [master]
 
 jobs:
   snyk-scan:
@@ -19,7 +19,8 @@ jobs:
         with:
           node-version: 18
 
-      - run: npm ci
+      - name: Install Dependencies
+        run: npm install
 
       - name: Snyk SCA Scan
         uses: snyk/actions/node@master
@@ -29,7 +30,7 @@ jobs:
           args: --severity-threshold=high
 
       - name: Snyk Monitor
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master'
         run: npx snyk monitor
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
